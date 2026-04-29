@@ -1,59 +1,80 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Taskora Backend API 🚀
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Taskora is a comprehensive multi-tenant SaaS application backend for task and project management, built with **Laravel 11**. It provides a robust RESTful API that powers the Taskora Flutter mobile application.
 
-## About Laravel
+## 🌟 Key Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 🔐 Authentication & Security
+- **Laravel Sanctum** for stateless API token authentication.
+- **OTP-based Password Reset:** Secure 6-digit email OTP system with retry limits, expiration, and branded email templates.
+- **Rate Limiting:** Built-in protection against brute force attacks on Auth and OTP endpoints.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🏢 Multi-Tenant Workspaces
+- Users can create and manage Workspaces.
+- **Roles & Permissions:** Hierarchy support (`owner`, `admin`, `member`, `reviewer`, `tester`).
+- **Invitation System:** Securely invite new members via email links with expiration limits.
+- Global middleware (`EnsureWorkspace`) to ensure users are acting within an active workspace context.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 📁 Projects & Tasks Management
+- CRUD operations for Projects.
+- **Advanced Task Workflow:**
+  - Status tracking: `pending`, `in_progress`, `review`, `done`.
+  - Task priorities and due dates.
+  - Granular task assignment to specific users.
+  - Task commenting system for team collaboration.
+- **Activity Logging:** Tracks all major actions (creation, updates, status changes) for a complete audit trail.
 
-## Learning Laravel
+### 🔔 Bi-Directional Notification System
+- **Push Notifications:** Centralized dispatching system for Device Tokens.
+- Smart notification routing:
+  - Admins are notified of all critical workspace changes.
+  - Users are notified of task assignments and status updates relevant to them.
+- **Deduplication Engine:** Custom lock mechanism (fingerprinting) to prevent duplicate notifications from firing within short intervals.
+- In-App database notifications for dashboard alerts with Unread Count badges.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 📊 Analytics & Dashboard
+- **Workspace Dashboard Stats:** Real-time metrics on total projects, tasks, and completion rates.
+- **Employee Stats:** Identifies the most loaded employees, tracks individual performance, and generates team reports.
+- Real-time activity feeds for admins.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠️ Technology Stack
+- **Framework:** Laravel 11
+- **Database:** SQLite (Configured for easy dev/prod transition to MySQL/PostgreSQL)
+- **Authentication:** Laravel Sanctum
+- **Mailing:** SMTP / Mailtrap for OTP and Invites
+- **API Architecture:** RESTful JSON API
 
-## Laravel Sponsors
+## 🚀 Installation & Setup
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yousseframdan72006/taskora_backend.git
+   cd taskora_backend
+   ```
 
-### Premium Partners
+2. **Install Dependencies:**
+   ```bash
+   composer install
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+3. **Environment Setup:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-## Contributing
+4. **Database Migration:**
+   ```bash
+   php artisan migrate --seed
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5. **Run the Development Server:**
+   ```bash
+   php artisan serve --host=0.0.0.0 --port=8000
+   ```
+   *(Running on `0.0.0.0` allows mobile emulators and physical devices on the same network to connect).*
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 📖 API Architecture Highlights
+- **Strict Validation:** Custom FormRequests for all endpoints.
+- **Event-Driven:** Uses Laravel Events and Listeners (`TaskStatusChanged`, `TaskAssigned`, `ProjectCreated`) to decouple business logic from side effects (like notifications).
+- **Service Pattern:** Complex logic (like OTP generation, validation, and Push Notification deduplication) is isolated in Dedicated Services and Jobs.
